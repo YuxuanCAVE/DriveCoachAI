@@ -44,7 +44,7 @@ const copy: Record<
     heroBody:
       "A post-drive AI coaching product that turns connected-vehicle telemetry into clear driving behaviour insights and personalised improvement suggestions.",
     wearableTitle: "Enable optional wearable data",
-    wearableBody: "Adds heart-rate context to Driver State. Vehicle telemetry remains the core analysis source.",
+    wearableBody: "Adds heart-rate context to driver state. Vehicle telemetry remains the core analysis source.",
     scenarioTitle: "Ground-truth scenario",
     scenarioBody: "Use fixed scenarios for testing, or AI-generated demo sessions for memory comparison.",
     regenerate: "Regenerate Sample Trip",
@@ -60,30 +60,30 @@ const copy: Record<
   },
   zh: {
     navItems: [
-      { label: "Demo", href: "#demo" },
-      { label: "Product", href: "#product" },
-      { label: "Architecture", href: "#architecture" },
+      { label: "演示", href: "#demo" },
+      { label: "产品", href: "#product" },
+      { label: "架构", href: "#architecture" },
       { label: "Agent", href: "#agent" },
-      { label: "Evaluation", href: "#evaluation" },
-      { label: "Roadmap", href: "#roadmap" },
+      { label: "评估", href: "#evaluation" },
+      { label: "路线图", href: "#roadmap" },
     ],
     heroTitle: "Human-Centred AI Driving Coach",
     heroBody:
-      "一个 post-drive AI coaching product，把 connected-vehicle telemetry 转化为清晰的驾驶行为洞察和个性化改进建议。",
-    wearableTitle: "启用 optional wearable data",
-    wearableBody: "为 Driver State 增加 heart-rate context；vehicle telemetry 仍然是核心分析来源。",
-    scenarioTitle: "Ground-truth scenario",
-    scenarioBody: "使用固定场景做测试，或使用 AI-generated demo sessions 做 memory comparison。",
-    regenerate: "Regenerate Sample Trip",
-    generating: "正在生成 Sample Trip",
-    backendStatus: "来自 FastAPI backend 的实时 session",
-    fallbackStatus: "本地 TypeScript fallback session",
-    loadingStatus: "正在请求 backend analysis",
-    sessionMemory: "Session memory",
+      "一款行程结束后的 AI 驾驶教练产品，把 connected-vehicle telemetry 转化为清晰的驾驶行为洞察和个性化改进建议。",
+    wearableTitle: "启用可选穿戴数据",
+    wearableBody: "为驾驶状态增加心率背景信息。车辆遥测仍然是核心分析来源。",
+    scenarioTitle: "测试场景",
+    scenarioBody: "选择固定测试场景，或使用 AI 生成的示例行程来进行历史对比。",
+    regenerate: "重新生成示例行程",
+    generating: "正在生成示例行程",
+    backendStatus: "来自 FastAPI 后端的实时 session",
+    fallbackStatus: "本地 TypeScript 备用 session",
+    loadingStatus: "正在请求后端分析",
+    sessionMemory: "历史记忆",
     sqlite: "SQLite",
-    compared: "已与上一次 session 对比",
-    baselineStored: "已存储 baseline session",
-    languageLabel: "Language",
+    compared: "已与上一次行程对比",
+    baselineStored: "已存为基准行程",
+    languageLabel: "语言",
   },
 };
 
@@ -99,31 +99,30 @@ const scenarioLabels: Record<Locale, Record<ScenarioKey, string>> = {
     wearable_not_connected: "Wearable not connected",
   },
   zh: {
-    agent_generated: "AI-generated random demo",
-    mixed_route_review: "Mixed route review",
-    smooth_baseline: "Smooth baseline",
-    harsh_braking: "Harsh braking",
-    high_lateral_acceleration: "High lateral acceleration",
-    unstable_speed_control: "Unstable speed control",
-    wearable_connected: "Wearable connected",
-    wearable_not_connected: "Wearable not connected",
+    agent_generated: "AI 随机生成示例",
+    mixed_route_review: "混合路线复盘",
+    smooth_baseline: "平顺基准行程",
+    harsh_braking: "急刹车场景",
+    high_lateral_acceleration: "高横向加速度场景",
+    unstable_speed_control: "速度控制不稳定场景",
+    wearable_connected: "已连接穿戴数据",
+    wearable_not_connected: "未连接穿戴数据",
   },
 };
 
 const scenarioOptions: {
   key: ScenarioKey;
-  label: string;
   seed: number;
   wearable?: boolean;
 }[] = [
-  { key: "agent_generated", label: "AI-generated random demo", seed: 9101 },
-  { key: "mixed_route_review", label: "Mixed route review", seed: 1024 },
-  { key: "smooth_baseline", label: "Smooth baseline", seed: 3101 },
-  { key: "harsh_braking", label: "Harsh braking", seed: 3201 },
-  { key: "high_lateral_acceleration", label: "High lateral acceleration", seed: 3301 },
-  { key: "unstable_speed_control", label: "Unstable speed control", seed: 3401 },
-  { key: "wearable_connected", label: "Wearable connected", seed: 3501, wearable: true },
-  { key: "wearable_not_connected", label: "Wearable not connected", seed: 3601, wearable: false },
+  { key: "agent_generated", seed: 9101 },
+  { key: "mixed_route_review", seed: 1024 },
+  { key: "smooth_baseline", seed: 3101 },
+  { key: "harsh_braking", seed: 3201 },
+  { key: "high_lateral_acceleration", seed: 3301 },
+  { key: "unstable_speed_control", seed: 3401 },
+  { key: "wearable_connected", seed: 3501, wearable: true },
+  { key: "wearable_not_connected", seed: 3601, wearable: false },
 ];
 
 export default function Home() {

@@ -1,5 +1,7 @@
 # DriveCoach AI
 
+中文文档入口: [docs/zh/README.md](docs/zh/README.md)
+
 **Human-Centred AI Driving Coach** is a route-aware post-drive AI coaching prototype. It turns connected-vehicle telemetry into deterministic driving behaviour metrics, risk-event evidence, and practical coaching guidance.
 
 The project explores a human-centred question: can driving performance be quantified from vehicle behaviour and optional driver-state signals, then explained in a way that helps a driver or evaluator improve the next session?
@@ -102,10 +104,12 @@ tests/
 Start here:
 
 - [Documentation Index](docs/README.md)
-- [Product Requirements Document](docs/PRD.md)
-- [Technical Design](docs/TECHNICAL_DESIGN.md)
-- [Agent Workflow Design](docs/AGENT_WORKFLOW_DESIGN.md)
-- [Metrics and Evaluation](docs/METRICS_AND_EVALUATION.md)
+- [English documentation](docs/en/README.md)
+- [中文文档](docs/zh/README.md)
+- [Product Requirements Document](docs/en/PRD.md)
+- [Technical Design](docs/en/TECHNICAL_DESIGN.md)
+- [Agent Workflow Design](docs/en/AGENT_WORKFLOW_DESIGN.md)
+- [Metrics and Evaluation](docs/en/METRICS_AND_EVALUATION.md)
 
 ## Local Setup
 
@@ -209,4 +213,3 @@ npm run build
 ## Status
 
 This repository is an interactive local MVP and portfolio-grade prototype. It is designed to demonstrate product thinking, deterministic analysis, and evidence-grounded AI coaching before production deployment.
-

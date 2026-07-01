@@ -20,9 +20,9 @@ const tabLabels: Record<Locale, Record<Tab, string>> = {
   },
   zh: {
     Summary: "概览",
-    "Drive Data": "Drive Data",
-    Coach: "Coach",
-    History: "History",
+    "Drive Data": "行车数据",
+    Coach: "AI 教练",
+    History: "历史",
   },
 };
 
@@ -70,10 +70,10 @@ export function PhoneDemo({ trip, locale }: { trip: SampleTrip; locale: Locale }
         </nav>
 
         <main className="no-scrollbar h-[680px] overflow-y-auto px-4 py-4">
-          {activeTab === "Summary" ? <SummaryTab trip={trip} /> : null}
-          {activeTab === "Drive Data" ? <DriveDataTab trip={trip} /> : null}
+          {activeTab === "Summary" ? <SummaryTab trip={trip} locale={locale} /> : null}
+          {activeTab === "Drive Data" ? <DriveDataTab trip={trip} locale={locale} /> : null}
           {activeTab === "Coach" ? <CoachTab trip={trip} locale={locale} /> : null}
-          {activeTab === "History" ? <HistoryTab trip={trip} /> : null}
+          {activeTab === "History" ? <HistoryTab trip={trip} locale={locale} /> : null}
         </main>
       </div>
     </div>

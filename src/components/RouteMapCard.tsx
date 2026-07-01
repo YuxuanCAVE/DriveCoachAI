@@ -2,11 +2,14 @@
 
 import { useMemo, useState } from "react";
 import type { PointerEvent } from "react";
+import type { Locale } from "@/lib/i18n";
+import { eventTypeLabel, severityLabel } from "@/lib/i18n";
 import type { RiskEvent, SampleTrip } from "@/types/driving";
 
 type RouteMapCardProps = {
   trip: SampleTrip;
   compact?: boolean;
+  locale: Locale;
 };
 
 type Point = {
@@ -171,7 +174,40 @@ function nearestSamplePoint(
   return markerPoint(event);
 }
 
-export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
+const copy: Record<
+  Locale,
+  {
+    scenario: string;
+    origin: string;
+    destination: string;
+    mapInstruction: string;
+    ariaMap: string;
+    selectEvent: (label: string) => string;
+    selectedHazard: string;
+  }
+> = {
+  en: {
+    scenario: "Generated realistic route scenario",
+    origin: "Origin",
+    destination: "Destination",
+    mapInstruction: "Drag map / select hazard",
+    ariaMap: "Interactive route review map",
+    selectEvent: (label) => `Select ${label}`,
+    selectedHazard: "Selected hazard",
+  },
+  zh: {
+    scenario: "生成的真实路线场景",
+    origin: "起点",
+    destination: "终点",
+    mapInstruction: "拖动地图 / 选择风险点",
+    ariaMap: "交互式路线复盘地图",
+    selectEvent: (label) => `选择${label}`,
+    selectedHazard: "选中的风险点",
+  },
+};
+
+export function RouteMapCard({ trip, compact = false, locale }: RouteMapCardProps) {
+  const t = copy[locale];
   const events = useMemo(() => hazardEvents(trip.events, compact), [trip.events, compact]);
   const geometry = useMemo(() => (trip.route.routeGeometry ?? []).filter(isGeoPoint), [trip.route.routeGeometry]);
   const projectedRoute = useMemo(() => projectGeometry(geometry), [geometry]);
@@ -228,7 +264,7 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-forest-700">
-            Generated realistic route scenario
+            {t.scenario}
           </p>
           <span className="shrink-0 rounded-full bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700">
             {trip.route.distanceMiles} mi &middot; {trip.route.durationMinutes} min
@@ -237,7 +273,7 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
 
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div className="rounded-2xl border border-forest-100 bg-forest-50/70 px-3 py-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-forest-700">Origin</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-forest-700">{t.origin}</p>
             <p className={`${compact ? "text-xs" : "text-sm"} mt-1 font-semibold leading-5 text-ink`}>
               {trip.route.origin}
             </p>
@@ -246,7 +282,7 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
             &rarr;
           </span>
           <div className="rounded-2xl border border-forest-100 bg-white px-3 py-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-forest-700">Destination</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-forest-700">{t.destination}</p>
             <p className={`${compact ? "text-xs" : "text-sm"} mt-1 font-semibold leading-5 text-ink`}>
               {trip.route.destination}
             </p>
@@ -263,7 +299,7 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
         onPointerUp={stopDrag}
         onPointerCancel={stopDrag}
         role="application"
-        aria-label="Interactive route review map"
+        aria-label={t.ariaMap}
       >
         <div
           className="absolute inset-[-30px] transition-transform duration-75"
@@ -335,7 +371,7 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
         </div>
 
         <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-forest-700 shadow-sm">
-          Drag map &middot; select hazard
+          {t.mapInstruction}
         </div>
 
         {events.map((event) => {
@@ -344,7 +380,7 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
             <button
               key={event.id}
               type="button"
-              aria-label={`Select ${event.type.replaceAll("_", " ")}`}
+              aria-label={t.selectEvent(eventTypeLabel(event.type, locale))}
               className="absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{
                 left: `${(point.x / 420) * 100}%`,
@@ -362,14 +398,14 @@ export function RouteMapCard({ trip, compact = false }: RouteMapCardProps) {
         <div className="mt-3 rounded-3xl border border-amber-100 bg-amber-50/80 p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-amber-700">Selected hazard</p>
-              <h4 className="mt-1 text-sm font-semibold capitalize text-ink">{selectedEvent.type.replaceAll("_", " ")}</h4>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-amber-700">{t.selectedHazard}</p>
+              <h4 className="mt-1 text-sm font-semibold text-ink">{eventTypeLabel(selectedEvent.type, locale)}</h4>
               <p className="mt-1 text-xs font-semibold text-forest-700">
                 {selectedEvent.segmentName} &middot; {formatTime(selectedEvent.startTime)}
               </p>
             </div>
             <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase text-amber-700 shadow-sm">
-              {selectedEvent.severity}
+              {severityLabel(selectedEvent.severity, locale)}
             </span>
           </div>
           <p className="mt-2 text-xs leading-5 text-slate-700">{selectedEvent.contextualExplanation}</p>

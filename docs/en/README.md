@@ -2,26 +2,23 @@
 
 This folder contains the core product, technical, agent, and evaluation documentation for DriveCoach AI.
 
-Language entry points:
-
-- [English documentation](en/README.md)
-- [中文文档](zh/README.md)
+Chinese documentation: [../zh/README.md](../zh/README.md)
 
 Recommended reading order:
 
-1. [PRD](en/PRD.md)
-2. [Technical Design](en/TECHNICAL_DESIGN.md)
-3. [Agent Workflow Design](en/AGENT_WORKFLOW_DESIGN.md)
-4. [Metrics and Evaluation](en/METRICS_AND_EVALUATION.md)
+1. [PRD](PRD.md)
+2. [Technical Design](TECHNICAL_DESIGN.md)
+3. [Agent Workflow Design](AGENT_WORKFLOW_DESIGN.md)
+4. [Metrics and Evaluation](METRICS_AND_EVALUATION.md)
 
 ## Document Map
 
 | Document | Audience | Purpose |
 | --- | --- | --- |
-| [PRD](en/PRD.md) / [中文](zh/PRD.md) | Product reviewers, project evaluators, designers, engineers | Explains the product origin, target users, user journey, MVP scope, product value, and roadmap |
-| [Technical Design](en/TECHNICAL_DESIGN.md) / [中文](zh/TECHNICAL_DESIGN.md) | Engineers and technical reviewers | Explains the frontend, backend, API surface, data contract, session generation, fallback strategy, and system architecture |
-| [Agent Workflow Design](en/AGENT_WORKFLOW_DESIGN.md) / [中文](zh/AGENT_WORKFLOW_DESIGN.md) | AI engineers and agent reviewers | Explains the coach agent state, LangGraph-ready workflow, retrieval, report generation, validation, and revision loop |
-| [Metrics and Evaluation](en/METRICS_AND_EVALUATION.md) / [中文](zh/METRICS_AND_EVALUATION.md) | Analytics, evaluation, and safety reviewers | Explains metric formulas, risk-event rules, context-aware thresholds, calibration plan, report evaluation, and knowledge evaluation |
+| [PRD](PRD.md) | Product reviewers, project evaluators, designers, engineers | Explains the product origin, target users, user journey, MVP scope, product value, and roadmap |
+| [Technical Design](TECHNICAL_DESIGN.md) | Engineers and technical reviewers | Explains the frontend, backend, API surface, data contract, session generation, fallback strategy, and system architecture |
+| [Agent Workflow Design](AGENT_WORKFLOW_DESIGN.md) | AI engineers and agent reviewers | Explains the coach agent state, LangGraph-ready workflow, retrieval, report generation, validation, and revision loop |
+| [Metrics and Evaluation](METRICS_AND_EVALUATION.md) | Analytics, evaluation, and safety reviewers | Explains metric formulas, risk-event rules, context-aware thresholds, calibration plan, report evaluation, and knowledge evaluation |
 
 ## Project Narrative
 
