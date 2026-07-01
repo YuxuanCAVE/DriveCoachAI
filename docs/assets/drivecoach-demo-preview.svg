@@ -1,0 +1,70 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="34" fill="#F4FAF5"/>
+  <path d="M0 0H1280V720H0V0Z" fill="url(#bg)"/>
+  <g opacity="0.38">
+    <path d="M90 116C186 70 264 92 340 142C444 210 546 174 638 120C746 56 864 52 1000 108C1090 145 1178 148 1240 118" stroke="#CFE4D8" stroke-width="18" stroke-linecap="round"/>
+    <path d="M68 608C174 538 286 536 398 578C514 622 626 616 748 550C860 488 1002 472 1184 528" stroke="#D8ECE1" stroke-width="26" stroke-linecap="round"/>
+    <path d="M100 486C230 420 314 404 420 424C552 450 632 404 748 330C866 254 1028 232 1196 276" stroke="#C4DCD1" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(86 92)">
+    <rect x="0" y="0" width="522" height="512" rx="38" fill="white" filter="url(#shadow)"/>
+    <text x="42" y="70" fill="#0B3328" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="760">DriveCoach AI</text>
+    <text x="42" y="116" fill="#496075" font-family="Inter, Arial, sans-serif" font-size="21">Human-Centred AI Driving Coach</text>
+    <text x="42" y="172" fill="#5C6F80" font-family="Inter, Arial, sans-serif" font-size="18">
+      <tspan x="42" dy="0">A post-drive AI coaching product that turns</tspan>
+      <tspan x="42" dy="30">connected-vehicle telemetry into clear driving</tspan>
+      <tspan x="42" dy="30">behaviour insights and next-drive targets.</tspan>
+    </text>
+    <rect x="42" y="272" width="202" height="52" rx="26" fill="#056348"/>
+    <text x="76" y="306" fill="white" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Live Demo</text>
+    <rect x="260" y="272" width="202" height="52" rx="26" fill="#ECFDF5" stroke="#BDEBD5"/>
+    <text x="294" y="306" fill="#056348" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">View Docs</text>
+    <g transform="translate(42 374)">
+      <rect width="128" height="82" rx="22" fill="#F7FAF8" stroke="#D8E7DE"/>
+      <text x="22" y="34" fill="#10221B" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="760">72</text>
+      <text x="22" y="60" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="13">Score</text>
+      <rect x="144" width="128" height="82" rx="22" fill="#F7FAF8" stroke="#D8E7DE"/>
+      <text x="166" y="34" fill="#10221B" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="760">5</text>
+      <text x="166" y="60" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="13">Risk Events</text>
+      <rect x="288" width="128" height="82" rx="22" fill="#F7FAF8" stroke="#D8E7DE"/>
+      <text x="310" y="34" fill="#10221B" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="760">83</text>
+      <text x="310" y="60" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="13">Context</text>
+    </g>
+  </g>
+  <g transform="translate(732 42)">
+    <rect x="0" y="0" width="382" height="636" rx="58" fill="#0D1713"/>
+    <rect x="16" y="16" width="350" height="604" rx="44" fill="#F7FBF7"/>
+    <text x="42" y="62" fill="#056348" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="2">DRIVECOACH AI</text>
+    <text x="42" y="94" fill="#10221B" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="730">Post-drive review</text>
+    <rect x="42" y="124" width="298" height="42" rx="16" fill="white"/>
+    <rect x="48" y="130" width="70" height="30" rx="12" fill="#056348"/>
+    <text x="62" y="150" fill="white" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Summary</text>
+    <text x="134" y="150" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Drive Data</text>
+    <text x="222" y="150" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Coach</text>
+    <text x="280" y="150" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">History</text>
+    <rect x="42" y="188" width="298" height="86" rx="24" fill="white"/>
+    <text x="62" y="218" fill="#056348" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="2">SUMMARY</text>
+    <text x="62" y="250" fill="#10221B" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="730">Route review</text>
+    <rect x="42" y="292" width="298" height="182" rx="26" fill="#E8F6EC" stroke="#BDEBD5"/>
+    <path d="M74 414C104 376 138 362 178 370C218 378 226 354 254 334C282 314 304 328 326 306" stroke="#056348" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="326" cy="306" r="13" fill="white" stroke="#056348" stroke-width="6"/>
+    <circle cx="78" cy="414" r="13" fill="#EF4444" stroke="white" stroke-width="5"/>
+    <circle cx="208" cy="366" r="13" fill="#F59E0B" stroke="white" stroke-width="5"/>
+    <circle cx="250" cy="336" r="13" fill="#F59E0B" stroke="white" stroke-width="5"/>
+    <circle cx="282" cy="323" r="16" fill="#F59E0B" stroke="white" stroke-width="5"/>
+    <text x="72" y="322" fill="#056348" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800">Cranfield to Milton Keynes</text>
+    <rect x="42" y="492" width="298" height="96" rx="24" fill="#FFF8E8" stroke="#F7D58A"/>
+    <text x="62" y="522" fill="#B45309" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="2">SELECTED HAZARD</text>
+    <text x="62" y="552" fill="#10221B" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="730">Late braking before curve</text>
+    <text x="62" y="576" fill="#056348" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">Reduce speed earlier before bends.</text>
+  </g>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1280" y1="0" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBF7"/>
+      <stop offset="1" stop-color="#E7F7EF"/>
+    </linearGradient>
+    <filter id="shadow" x="-30" y="-30" width="582" height="572" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#0B3328" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+</svg>
