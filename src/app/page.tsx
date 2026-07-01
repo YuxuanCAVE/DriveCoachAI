@@ -5,17 +5,110 @@ import { DocumentationSections } from "@/components/DocumentationSections";
 import { PhoneDemo } from "@/components/PhoneDemo";
 import { compareAndSaveSession, fetchDemoSession } from "@/lib/apiClient";
 import type { ScenarioKey } from "@/lib/apiClient";
+import type { Locale } from "@/lib/i18n";
 import { generateSampleTrip } from "@/lib/sampleTripGenerator";
 import type { SessionComparison } from "@/types/driving";
 
-const navItems = [
-  { label: "Demo", href: "#demo" },
-  { label: "Product", href: "#product" },
-  { label: "Architecture", href: "#architecture" },
-  { label: "Agent", href: "#agent" },
-  { label: "Evaluation", href: "#evaluation" },
-  { label: "Roadmap", href: "#roadmap" },
-];
+const copy: Record<
+  Locale,
+  {
+    navItems: { label: string; href: string }[];
+    heroTitle: string;
+    heroBody: string;
+    wearableTitle: string;
+    wearableBody: string;
+    scenarioTitle: string;
+    scenarioBody: string;
+    regenerate: string;
+    generating: string;
+    backendStatus: string;
+    fallbackStatus: string;
+    loadingStatus: string;
+    sessionMemory: string;
+    sqlite: string;
+    compared: string;
+    baselineStored: string;
+    languageLabel: string;
+  }
+> = {
+  en: {
+    navItems: [
+      { label: "Demo", href: "#demo" },
+      { label: "Product", href: "#product" },
+      { label: "Architecture", href: "#architecture" },
+      { label: "Agent", href: "#agent" },
+      { label: "Evaluation", href: "#evaluation" },
+      { label: "Roadmap", href: "#roadmap" },
+    ],
+    heroTitle: "Human-Centred AI Driving Coach",
+    heroBody:
+      "A post-drive AI coaching product that turns connected-vehicle telemetry into clear driving behaviour insights and personalised improvement suggestions.",
+    wearableTitle: "Enable optional wearable data",
+    wearableBody: "Adds heart-rate context to Driver State. Vehicle telemetry remains the core analysis source.",
+    scenarioTitle: "Ground-truth scenario",
+    scenarioBody: "Use fixed scenarios for testing, or AI-generated demo sessions for memory comparison.",
+    regenerate: "Regenerate Sample Trip",
+    generating: "Generating Sample Trip",
+    backendStatus: "Live FastAPI backend session",
+    fallbackStatus: "Local TypeScript fallback session",
+    loadingStatus: "Requesting backend analysis",
+    sessionMemory: "Session memory",
+    sqlite: "SQLite",
+    compared: "Compared with previous session",
+    baselineStored: "Baseline session stored",
+    languageLabel: "Language",
+  },
+  zh: {
+    navItems: [
+      { label: "Demo", href: "#demo" },
+      { label: "Product", href: "#product" },
+      { label: "Architecture", href: "#architecture" },
+      { label: "Agent", href: "#agent" },
+      { label: "Evaluation", href: "#evaluation" },
+      { label: "Roadmap", href: "#roadmap" },
+    ],
+    heroTitle: "Human-Centred AI Driving Coach",
+    heroBody:
+      "一个 post-drive AI coaching product，把 connected-vehicle telemetry 转化为清晰的驾驶行为洞察和个性化改进建议。",
+    wearableTitle: "启用 optional wearable data",
+    wearableBody: "为 Driver State 增加 heart-rate context；vehicle telemetry 仍然是核心分析来源。",
+    scenarioTitle: "Ground-truth scenario",
+    scenarioBody: "使用固定场景做测试，或使用 AI-generated demo sessions 做 memory comparison。",
+    regenerate: "Regenerate Sample Trip",
+    generating: "正在生成 Sample Trip",
+    backendStatus: "来自 FastAPI backend 的实时 session",
+    fallbackStatus: "本地 TypeScript fallback session",
+    loadingStatus: "正在请求 backend analysis",
+    sessionMemory: "Session memory",
+    sqlite: "SQLite",
+    compared: "已与上一次 session 对比",
+    baselineStored: "已存储 baseline session",
+    languageLabel: "Language",
+  },
+};
+
+const scenarioLabels: Record<Locale, Record<ScenarioKey, string>> = {
+  en: {
+    agent_generated: "AI-generated random demo",
+    mixed_route_review: "Mixed route review",
+    smooth_baseline: "Smooth baseline",
+    harsh_braking: "Harsh braking",
+    high_lateral_acceleration: "High lateral acceleration",
+    unstable_speed_control: "Unstable speed control",
+    wearable_connected: "Wearable connected",
+    wearable_not_connected: "Wearable not connected",
+  },
+  zh: {
+    agent_generated: "AI-generated random demo",
+    mixed_route_review: "Mixed route review",
+    smooth_baseline: "Smooth baseline",
+    harsh_braking: "Harsh braking",
+    high_lateral_acceleration: "High lateral acceleration",
+    unstable_speed_control: "Unstable speed control",
+    wearable_connected: "Wearable connected",
+    wearable_not_connected: "Wearable not connected",
+  },
+};
 
 const scenarioOptions: {
   key: ScenarioKey;
@@ -34,6 +127,7 @@ const scenarioOptions: {
 ];
 
 export default function Home() {
+  const [locale, setLocale] = useState<Locale>("en");
   const [scenario, setScenario] = useState<ScenarioKey>("agent_generated");
   const [includeWearableData, setIncludeWearableData] = useState(false);
   const [seed, setSeed] = useState(9101);
@@ -45,6 +139,7 @@ export default function Home() {
   );
   const [sessionSource, setSessionSource] = useState<"loading" | "backend" | "fallback">("loading");
   const [comparison, setComparison] = useState<SessionComparison | null>(null);
+  const t = copy[locale];
 
   useEffect(() => {
     const controller = new AbortController();
@@ -115,8 +210,8 @@ export default function Home() {
           <a href="#demo" className="text-sm font-black tracking-tight text-forest-900">
             DriveCoach AI
           </a>
-          <div className="no-scrollbar flex gap-2 overflow-x-auto">
-            {navItems.map((item) => (
+          <div className="no-scrollbar flex items-center gap-2 overflow-x-auto">
+            {t.navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -125,6 +220,21 @@ export default function Home() {
                 {item.label}
               </a>
             ))}
+            <div className="ml-1 flex shrink-0 items-center rounded-full border border-forest-100 bg-white p-1 shadow-sm">
+              <span className="sr-only">{t.languageLabel}</span>
+              {(["en", "zh"] as const).map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setLocale(item)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                    locale === item ? "bg-forest-700 text-white" : "text-slate-500 hover:bg-forest-50"
+                  }`}
+                >
+                  {item === "en" ? "EN" : "中文"}
+                </button>
+              ))}
+            </div>
           </div>
         </nav>
       </header>
@@ -132,17 +242,17 @@ export default function Home() {
       <section id="demo" className="mx-auto grid min-h-screen scroll-mt-24 max-w-6xl items-center gap-12 px-6 py-10 lg:grid-cols-[1fr_440px]">
         <div>
           <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-ink md:text-6xl">
-            Human-Centred AI Driving Coach
+            {t.heroTitle}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-            A post-drive AI coaching product that turns connected-vehicle telemetry into clear driving behaviour insights and personalised improvement suggestions.
+            {t.heroBody}
           </p>
 
           <label className="mt-7 flex max-w-md cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-4 shadow-card">
             <span>
-              <span className="block text-sm font-semibold text-ink">Enable optional wearable data</span>
+              <span className="block text-sm font-semibold text-ink">{t.wearableTitle}</span>
               <span className="mt-1 block text-xs leading-5 text-slate-500">
-                Adds heart-rate context to Driver State. Vehicle telemetry remains the core analysis source.
+                {t.wearableBody}
               </span>
             </span>
             <button
@@ -162,9 +272,9 @@ export default function Home() {
           </label>
 
           <label className="mt-4 block max-w-md rounded-3xl border border-slate-200 bg-white p-4 shadow-card">
-            <span className="block text-sm font-semibold text-ink">Ground-truth scenario</span>
+            <span className="block text-sm font-semibold text-ink">{t.scenarioTitle}</span>
             <span className="mt-1 block text-xs leading-5 text-slate-500">
-              Use fixed scenarios for testing, or AI-generated demo sessions for memory comparison.
+              {t.scenarioBody}
             </span>
             <select
               value={scenario}
@@ -173,7 +283,7 @@ export default function Home() {
             >
               {scenarioOptions.map((option) => (
                 <option key={option.key} value={option.key}>
-                  {option.label}
+                  {scenarioLabels[locale][option.key]}
                 </option>
               ))}
             </select>
@@ -187,34 +297,34 @@ export default function Home() {
             disabled={sessionSource === "loading"}
             className="mb-2 rounded-full bg-forest-700 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-900/15 transition hover:bg-forest-600 disabled:cursor-wait disabled:bg-forest-500"
           >
-            {sessionSource === "loading" ? "Generating Sample Trip" : "Regenerate Sample Trip"}
+            {sessionSource === "loading" ? t.generating : t.regenerate}
           </button>
           <p className="mb-4 text-xs font-semibold text-slate-500">
             {sessionSource === "backend"
-              ? "Live FastAPI backend session"
+              ? t.backendStatus
               : sessionSource === "fallback"
-                ? "Local TypeScript fallback session"
-                : "Requesting backend analysis"}
+                ? t.fallbackStatus
+                : t.loadingStatus}
           </p>
           {comparison ? (
             <div className="mb-4 w-full rounded-3xl border border-forest-100 bg-white p-4 shadow-card">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-forest-700">Session memory</p>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-forest-700">{t.sessionMemory}</p>
                 <span className="rounded-full bg-forest-50 px-3 py-1 text-xs font-bold text-forest-700">
-                  SQLite
+                  {t.sqlite}
                 </span>
               </div>
               <p className="mt-2 text-sm font-semibold text-ink">
-                {comparison.hasPrevious ? "Compared with previous session" : "Baseline session stored"}
+                {comparison.hasPrevious ? t.compared : t.baselineStored}
               </p>
               <p className="mt-1 text-sm leading-5 text-slate-600">{comparison.insights[0]}</p>
             </div>
           ) : null}
-          <PhoneDemo trip={trip} />
+          <PhoneDemo trip={trip} locale={locale} />
         </div>
       </section>
 
-      <DocumentationSections />
+      <DocumentationSections locale={locale} />
     </main>
   );
 }

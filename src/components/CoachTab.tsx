@@ -6,6 +6,7 @@ import { generateMockCoachReport } from "@/lib/coachReport";
 import { generateLocalMemoryAwareFallback } from "@/lib/memoryAwareFallback";
 import { coachReportCache, coachingTargetsCache, memoryAwareCache, targetCompletionCache } from "@/lib/sessionResultCache";
 import { generateLocalTargetCompletionFallback } from "@/lib/targetCompletionFallback";
+import type { Locale } from "@/lib/i18n";
 import type {
   CoachChatMessage,
   CoachChatResponse,
@@ -17,11 +18,134 @@ import type {
   TargetCompletionResponse,
 } from "@/types/driving";
 
-const recommendedQuestions = [
-  "Did I improve from last drive?",
-  "Why was this event risky?",
-  "What should I focus on next drive?",
-];
+const coachCopy: Record<
+  Locale,
+  {
+    recommendedQuestions: string[];
+    localFallbackPrefix: string;
+    localFallbackSafety: string;
+    loading: string;
+    ready: string;
+    thinking: string;
+    active: string;
+    aiCoachSummary: string;
+    postDriveSummary: string;
+    mainFocus: string;
+    defaultMainFocus: string;
+    defaultWhyItMatters: string;
+    defaultEvidencePolicy: string;
+    keyEvidence: string;
+    evidenceUsedTitle: string;
+    events: string;
+    nextDriveTarget: string;
+    keepCollecting: string;
+    previousTarget: string;
+    completed: string;
+    continueFocus: string;
+    current: string;
+    target: string;
+    generateAnotherSession: string;
+    askDriveCoach: string;
+    followUp: string;
+    emptyChat: string;
+    answerEvidence: string;
+    inputPlaceholder: string;
+    ask: string;
+    evidenceTrust: string;
+    evidenceTrustBody: string;
+    checksPassed: string;
+    needsReview: string;
+    retrievedKnowledge: string;
+    memoryComparison: string;
+  }
+> = {
+  en: {
+    recommendedQuestions: [
+      "Did I improve from last drive?",
+      "Why was this event risky?",
+      "What should I focus on next drive?",
+    ],
+    localFallbackPrefix: "For this follow-up, start from the deterministic event evidence and focus on one practical improvement at a time:",
+    localFallbackSafety: "Local fallback response. Backend coach chat was unavailable.",
+    loading: "Loading",
+    ready: "Ready",
+    thinking: "Thinking",
+    active: "Active",
+    aiCoachSummary: "AI coach summary",
+    postDriveSummary: "Post-drive coaching summary",
+    mainFocus: "Main focus",
+    defaultMainFocus: "Keep the next drive focused on smoother speed, braking, and steering transitions.",
+    defaultWhyItMatters: "Smoother speed choice, braking, and steering improve comfort, stability, and predictability.",
+    defaultEvidencePolicy:
+      "Metrics and Risk Events are calculated deterministically. The AI coach explains the evidence and turns it into practical guidance.",
+    keyEvidence: "Key evidence",
+    evidenceUsedTitle: "What the coach used",
+    events: "events",
+    nextDriveTarget: "Next drive target",
+    keepCollecting: "Keep collecting comparable route reviews",
+    previousTarget: "Previous target",
+    completed: "Completed",
+    continueFocus: "Continue focus",
+    current: "Current",
+    target: "Target",
+    generateAnotherSession: "Generate another backend session to start measurable target tracking.",
+    askDriveCoach: "Ask DriveCoach",
+    followUp: "Follow up on this drive",
+    emptyChat: "Ask about the main focus, route evidence, or what to improve next time.",
+    answerEvidence: "Answer evidence",
+    inputPlaceholder: "Ask about this drive...",
+    ask: "Ask",
+    evidenceTrust: "Evidence & trust",
+    evidenceTrustBody: "Technical grounding is available for review, but hidden by default to keep the coaching flow focused.",
+    checksPassed: "Checks passed",
+    needsReview: "Needs review",
+    retrievedKnowledge: "Retrieved knowledge",
+    memoryComparison: "Memory comparison",
+  },
+  zh: {
+    recommendedQuestions: [
+      "和上一次相比有进步吗？",
+      "为什么这个 Risk Event 重要？",
+      "下一次驾驶应该重点关注什么？",
+    ],
+    localFallbackPrefix: "这次 follow-up 会先基于 deterministic event evidence，并聚焦一个可执行的改进点：",
+    localFallbackSafety: "本地 fallback response。Backend coach chat 当前不可用。",
+    loading: "加载中",
+    ready: "就绪",
+    thinking: "思考中",
+    active: "Active",
+    aiCoachSummary: "AI Coach Summary",
+    postDriveSummary: "本次行程 coaching summary",
+    mainFocus: "Main focus",
+    defaultMainFocus: "下一次驾驶可以重点关注更平顺的速度、制动和转向过渡。",
+    defaultWhyItMatters: "更平顺的 speed choice、braking 和 steering 有助于提升 comfort、stability 和 predictability。",
+    defaultEvidencePolicy:
+      "Metrics 和 Risk Events 由 deterministic analysis 计算。AI coach 负责解释 evidence，并转化成 practical guidance。",
+    keyEvidence: "Key evidence",
+    evidenceUsedTitle: "Coach 使用的证据",
+    events: "events",
+    nextDriveTarget: "Next drive target",
+    keepCollecting: "继续收集可比较的 route reviews",
+    previousTarget: "Previous target",
+    completed: "已完成",
+    continueFocus: "继续关注",
+    current: "Current",
+    target: "Target",
+    generateAnotherSession: "生成下一次 backend session 后，可以开始追踪 measurable target。",
+    askDriveCoach: "Ask DriveCoach",
+    followUp: "继续追问本次行程",
+    emptyChat: "可以询问 main focus、route evidence，或下一次驾驶应该如何改进。",
+    answerEvidence: "Answer evidence",
+    inputPlaceholder: "询问本次驾驶...",
+    ask: "Ask",
+    evidenceTrust: "Evidence & trust",
+    evidenceTrustBody: "技术证据可以展开查看；默认收起是为了让 coaching flow 更聚焦。",
+    checksPassed: "Checks passed",
+    needsReview: "Needs review",
+    retrievedKnowledge: "Retrieved knowledge",
+    memoryComparison: "Memory comparison",
+  },
+};
 
 type StoredCoachChat = {
   messages: CoachChatMessage[];
@@ -60,17 +184,18 @@ function saveStoredChat(tripId: string, value: StoredCoachChat) {
   window.localStorage.setItem(chatStorageKey(tripId), JSON.stringify(value));
 }
 
-function localChatFallback(question: string, report: CoachReport): CoachChatResponse {
+function localChatFallback(question: string, report: CoachReport, locale: Locale): CoachChatResponse {
+  const t = coachCopy[locale];
   return {
-    answer: `${report.summary} For this follow-up, start from the deterministic event evidence and focus on one practical improvement at a time: ${question}`,
+    answer: `${report.summary} ${t.localFallbackPrefix} ${question}`,
     evidenceUsed: [
       { type: "metric", label: "Risk events", value: `${report.keyFindings.length} report findings` },
       { type: "knowledge", label: "Evidence-first coaching", value: "local fallback" },
     ],
     coachingActions: report.nextSessionFocus.slice(0, 3),
     confidence: "medium",
-    safetyNotes: ["Local fallback response. Backend coach chat was unavailable."],
-    followUpQuestions: recommendedQuestions,
+    safetyNotes: [t.localFallbackSafety],
+    followUpQuestions: t.recommendedQuestions,
     agentMode: "frontend_local_chat_fallback",
   };
 }
@@ -167,7 +292,8 @@ function formatValue(value: number) {
   return value.toFixed(Number.isInteger(value) ? 0 : 1);
 }
 
-export function CoachTab({ trip }: { trip: SampleTrip }) {
+export function CoachTab({ trip, locale }: { trip: SampleTrip; locale: Locale }) {
+  const t = coachCopy[locale];
   const [report, setReport] = useState<CoachReport>(() => generateMockCoachReport(trip));
   const [reportSource, setReportSource] = useState<"loading" | "backend" | "fallback">("loading");
   const [targetsResponse, setTargetsResponse] = useState<CoachingTargetsResponse | null>(() => localCoachingTargetsFallback(trip));
@@ -193,7 +319,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
 
   const chatSourceLabel = useMemo(() => {
     if (!chatResponse) {
-      return "Ready";
+      return t.ready;
     }
     if (chatResponse.agentMode?.startsWith("deepseek_llm")) {
       return "DeepSeek";
@@ -202,7 +328,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
       return "Fallback";
     }
     return "Agent";
-  }, [chatResponse]);
+  }, [chatResponse, t.ready]);
 
   useEffect(() => {
     const cached = coachReportCache.get(trip.id);
@@ -354,7 +480,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
       setMessages(completedMessages);
       saveStoredChat(trip.id, { messages: completedMessages, chatResponse: response });
     } catch {
-      const fallback = localChatFallback(trimmed, report);
+      const fallback = localChatFallback(trimmed, report, locale);
       setChatResponse(fallback);
       const completedMessages = [...nextMessages, { role: "assistant" as const, content: fallback.answer }];
       setMessages(completedMessages);
@@ -374,7 +500,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
     structured?.mainBehaviouralPattern ??
     report.eventSuggestions?.[0]?.suggestion ??
     report.behaviourInsight ??
-    "Keep the next drive focused on smoother speed, braking, and steering transitions.";
+    t.defaultMainFocus;
   const target = primaryTarget(targetCompletion, targetsResponse);
   const firstCompletion = targetCompletion?.results?.[0] ?? null;
   const evidenceItems = report.evidenceUsed?.length
@@ -385,35 +511,35 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
     <div className="space-y-4">
       <section className="rounded-[32px] bg-ink p-6 text-white shadow-sm">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">AI coach summary</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">{t.aiCoachSummary}</p>
           <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-100">
             {sourceLabel}
           </span>
         </div>
-        <h3 className="mt-3 text-2xl font-semibold leading-8">Post-drive coaching summary</h3>
+        <h3 className="mt-3 text-2xl font-semibold leading-8">{t.postDriveSummary}</h3>
         <p className="mt-3 text-sm leading-6 text-slate-100">{structured?.overallAssessment ?? report.summary}</p>
         <div className="mt-5 border-t border-white/10 pt-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-200">Main focus</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-200">{t.mainFocus}</p>
           <p className="mt-2 text-lg font-semibold leading-7 text-white">{mainFocus}</p>
           <p className="mt-3 text-sm leading-6 text-slate-300">
             {structured?.whyItMatters ??
-              "Smoother speed choice, braking, and steering improve comfort, stability, and predictability."}
+              t.defaultWhyItMatters}
           </p>
         </div>
         <p className="mt-4 text-xs leading-5 text-slate-300">
           {report.evidencePolicy ??
-            "Metrics and risk events are calculated deterministically. The AI coach explains the evidence and turns it into practical guidance."}
+            t.defaultEvidencePolicy}
         </p>
       </section>
 
       <section className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-forest-700">Key evidence</p>
-            <h3 className="mt-1 text-sm font-semibold text-ink">What the coach used</h3>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-forest-700">{t.keyEvidence}</p>
+            <h3 className="mt-1 text-sm font-semibold text-ink">{t.evidenceUsedTitle}</h3>
           </div>
           <span className="rounded-full bg-forest-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-forest-700">
-            {trip.events.length} events
+            {trip.events.length} {t.events}
           </span>
         </div>
         <div className="mt-3 grid gap-2">
@@ -431,18 +557,18 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
       <section className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-forest-700">Next drive target</p>
-            <h3 className="mt-1 text-sm font-semibold text-ink">{target?.title ?? "Keep collecting comparable route reviews"}</h3>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-forest-700">{t.nextDriveTarget}</p>
+            <h3 className="mt-1 text-sm font-semibold text-ink">{target?.title ?? t.keepCollecting}</h3>
           </div>
           <span className="rounded-full bg-forest-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-forest-700">
-            {targetsStatus === "loading" || targetCompletionStatus === "loading" ? "Loading" : "Active"}
+            {targetsStatus === "loading" || targetCompletionStatus === "loading" ? t.loading : t.active}
           </span>
         </div>
         {firstCompletion ? (
           <div className="mt-3 rounded-2xl bg-slate-50 px-3 py-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Previous target</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{t.previousTarget}</p>
             <p className="mt-1 text-sm font-semibold leading-5 text-ink">
-              {firstCompletion.completed ? "Completed" : "Continue focus"} - {firstCompletion.title}
+              {firstCompletion.completed ? t.completed : t.continueFocus} - {firstCompletion.title}
             </p>
           </div>
         ) : null}
@@ -450,14 +576,14 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
           <>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <div className="rounded-2xl bg-slate-50 px-3 py-2">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Current</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">{t.current}</p>
                 <p className="mt-1 text-base font-semibold text-ink">
                   {formatValue(target.baselineValue)}
                   <span className="text-xs font-medium text-slate-500"> {target.unit}</span>
                 </p>
               </div>
               <div className="rounded-2xl bg-forest-50 px-3 py-2">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-forest-700">Target</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-forest-700">{t.target}</p>
                 <p className="mt-1 text-base font-semibold text-forest-800">
                   {formatValue(target.targetValue)}
                   <span className="text-xs font-medium text-slate-500"> {target.unit}</span>
@@ -469,7 +595,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
           </>
         ) : (
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            Generate another backend session to start measurable target tracking.
+            {t.generateAnotherSession}
           </p>
         )}
       </section>
@@ -477,11 +603,11 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
       <section className="rounded-[24px] border border-forest-100 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-forest-700">Ask DriveCoach</p>
-            <h3 className="mt-1 text-sm font-semibold text-ink">Follow up on this drive</h3>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-forest-700">{t.askDriveCoach}</p>
+            <h3 className="mt-1 text-sm font-semibold text-ink">{t.followUp}</h3>
           </div>
           <span className="rounded-full bg-forest-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-forest-700">
-            {chatStatus === "loading" ? "Thinking" : chatSourceLabel}
+            {chatStatus === "loading" ? t.thinking : chatSourceLabel}
           </span>
         </div>
 
@@ -500,13 +626,13 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
           </div>
         ) : (
           <div className="mt-4 rounded-2xl bg-forest-50 p-3 text-sm leading-5 text-forest-800">
-            Ask about the main focus, route evidence, or what to improve next time.
+            {t.emptyChat}
           </div>
         )}
 
         {chatResponse ? (
           <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-3">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Answer evidence</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{t.answerEvidence}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {chatResponse.evidenceUsed.slice(0, 3).map((evidence) => (
                 <span key={`${evidence.type}-${evidence.label}`} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600">
@@ -518,7 +644,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
         ) : null}
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {(chatResponse?.followUpQuestions ?? recommendedQuestions).slice(0, 3).map((question) => (
+          {(chatResponse?.followUpQuestions ?? t.recommendedQuestions).slice(0, 3).map((question) => (
             <button
               key={question}
               type="button"
@@ -535,7 +661,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
           <input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            placeholder="Ask about this drive..."
+            placeholder={t.inputPlaceholder}
             className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-forest-400"
           />
           <button
@@ -543,15 +669,15 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
             disabled={chatStatus === "loading" || !draft.trim()}
             className="rounded-2xl bg-forest-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-600 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            Ask
+            {t.ask}
           </button>
         </form>
       </section>
 
       <details className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-        <summary className="cursor-pointer text-sm font-semibold text-ink">Evidence & trust</summary>
+        <summary className="cursor-pointer text-sm font-semibold text-ink">{t.evidenceTrust}</summary>
         <p className="mt-3 text-xs leading-5 text-slate-500">
-          Technical grounding is available for review, but hidden by default to keep the coaching flow focused.
+          {t.evidenceTrustBody}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {report.evaluation ? (
@@ -560,7 +686,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
                 Eval {report.evaluation.qualityScore}/100
               </span>
               <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">
-                {report.evaluation.passed ? "Checks passed" : "Needs review"}
+                {report.evaluation.passed ? t.checksPassed : t.needsReview}
               </span>
             </>
           ) : null}
@@ -577,7 +703,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
         </div>
         {report.retrievedKnowledge?.length ? (
           <div className="mt-4 grid gap-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Retrieved knowledge</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">{t.retrievedKnowledge}</p>
             {report.retrievedKnowledge.slice(0, 4).map((knowledge) => (
               <div key={knowledge.id} className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
                 <p className="text-xs font-semibold text-ink">{knowledge.title}</p>
@@ -589,7 +715,7 @@ export function CoachTab({ trip }: { trip: SampleTrip }) {
         ) : null}
         {memoryResponse ? (
           <div className="mt-4 rounded-2xl bg-slate-50 px-3 py-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Memory comparison</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{t.memoryComparison}</p>
             <p className="mt-1 text-xs leading-5 text-slate-600">{memoryResponse.memorySummary}</p>
           </div>
         ) : null}
