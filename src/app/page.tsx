@@ -1,25 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { DocumentationSections } from "@/components/DocumentationSections";
 import { PhoneDemo } from "@/components/PhoneDemo";
 import { compareAndSaveSession, fetchDemoSession } from "@/lib/apiClient";
 import type { ScenarioKey } from "@/lib/apiClient";
 import { generateSampleTrip } from "@/lib/sampleTripGenerator";
 import type { SessionComparison } from "@/types/driving";
 
-const productHighlights = [
-  {
-    title: "Route-aware trip review",
-    body: "Reviews each completed trip in context, connecting route segments, speed choice, vehicle motion, and driving smoothness.",
-  },
-  {
-    title: "Risk-event explanation",
-    body: "Detects higher-demand moments such as late braking, unstable cornering, and speed variation, then explains the evidence behind them.",
-  },
-  {
-    title: "AI coaching summary",
-    body: "Turns deterministic metrics and event evidence into practical next-drive focus areas, with wearable data as optional context only.",
-  },
+const navItems = [
+  { label: "Demo", href: "#demo" },
+  { label: "Product", href: "#product" },
+  { label: "Architecture", href: "#architecture" },
+  { label: "Agent", href: "#agent" },
+  { label: "Evaluation", href: "#evaluation" },
+  { label: "Roadmap", href: "#roadmap" },
 ];
 
 const scenarioOptions: {
@@ -115,7 +110,26 @@ export default function Home() {
 
   return (
     <main>
-      <section className="mx-auto grid min-h-screen max-w-6xl items-center gap-12 px-6 py-10 lg:grid-cols-[1fr_440px]">
+      <header className="sticky top-0 z-40 border-b border-forest-100/80 bg-[#f7fbf7]/90 backdrop-blur-xl">
+        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
+          <a href="#demo" className="text-sm font-black tracking-tight text-forest-900">
+            DriveCoach AI
+          </a>
+          <div className="no-scrollbar flex gap-2 overflow-x-auto">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-full px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-white hover:text-forest-700 hover:shadow-sm"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+      </header>
+
+      <section id="demo" className="mx-auto grid min-h-screen scroll-mt-24 max-w-6xl items-center gap-12 px-6 py-10 lg:grid-cols-[1fr_440px]">
         <div>
           <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-ink md:text-6xl">
             Human-Centred AI Driving Coach
@@ -200,31 +214,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="rounded-[32px] border border-forest-100 bg-white/85 p-5 shadow-card md:p-6">
-          <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-forest-700">Product overview</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink">From route context to risk explanation to coaching summary.</h2>
-            </div>
-            <p className="max-w-md text-sm leading-6 text-slate-500">
-              DriveCoach AI is designed to help users understand what happened during a trip, why it matters, and what to improve next.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {productHighlights.map((item, index) => (
-              <article key={item.title} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-forest-700 text-xs font-bold text-white">
-                  {index + 1}
-                </span>
-                <h3 className="mt-4 text-base font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <DocumentationSections />
     </main>
   );
 }
